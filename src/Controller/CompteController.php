@@ -27,6 +27,11 @@ private $repo;
 
     public function __invoke(Compte $data):Compte
     {  
+        // Numero du compte
+        $form=date_format($data->getCreatedAt(),"Ymshis");
+        $data->setNumCompte("NC".$form."SN");
+        
+
         //user createur
         $userConnect = $this->tokenStorage->getToken()->getUser();
         $data->setUser($userConnect);
@@ -40,10 +45,10 @@ private $repo;
 
              } 
               //Gérer le solde 
-        $sold=$data->getDepots()[0]->getMontant();
+        $sold = $data->getDepots()[0]->getMontant();
         $data->setSolde($sold);
         
-        if($sold>500000){
+        if($sold>=500000){
             return $data;
             
          }else{

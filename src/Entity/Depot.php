@@ -59,7 +59,6 @@ class Depot
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="depots", cascade={"persist"})
-     * 
      */
     private $user;
 
