@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Depot;
@@ -26,11 +25,11 @@ class DepotController
         $montant=$data->getMontant();
         $compte=$data->getCompte();
         $solde=$compte->getSolde();
-        if($montant > 0){
+        if($montant >= 50){
             $compte->setSolde($solde + $montant);
             return $data;
         }else{
-            throw new Exception("Le montant doit etre superieur à 0");
+            throw new Exception("Le montant doit être superieur à 0");
         }
     }
 }

@@ -22,7 +22,7 @@ protected $tokenStorage;
 
     public function __invoke(User $data): User
     {
-        if ($data->getPassword()!=null) {
+        if ($data->getPassword()) {
             $data->setPassword(
             $this->userPasswordEncoder->encodePassword($data, $data->getPassword())
             );

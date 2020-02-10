@@ -35,6 +35,7 @@ private $repo;
         //user createur
         $userConnect = $this->tokenStorage->getToken()->getUser();
         $data->setUser($userConnect);
+        $data->getDepots()[0]->setUser($userConnect);
 
 
         if($data->getPartenaire()!=null){
@@ -49,10 +50,9 @@ private $repo;
         $data->setSolde($sold);
         
         if($sold>=500000){
-            return $data;
-            
+            return $data;         
          }else{
-            throw new Exception("Le montant doit etre superieur ou égale à 500.000");
+            throw new Exception("Le montant doit être superieur ou égale à 500.000");
         }   
              
     }

@@ -16,7 +16,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 *               "POST"={
  *                  
 *                    "controller"=DepotController::class,
-
 *                }
 * 
 *     },

@@ -32,9 +32,6 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *     
  *      },
  * },
- *      
- *     
- * 
  * )
  * @UniqueEntity(
  * fields={"username"},
@@ -126,10 +123,9 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $this->roles = 'ROLE_'.strtoupper($this->role->getLibelle());
         // guarantee every user at least has ROLE_USER
-
-        return $roles;
+        return array($this->roles);
     }
 
     public function setRoles(array $roles): self
