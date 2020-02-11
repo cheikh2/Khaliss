@@ -97,6 +97,28 @@ class User implements UserInterface
      */
     private $partenaire;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="retrait")
+     */
+    private $transactions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="transfert")
+     */
+    private $transfert;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Affectation", mappedBy="user")
+     */
+    private $affectations;
+
+    public function __construct()
+    {
+        $this->transactions = new ArrayCollection();
+        $this->transfert = new ArrayCollection();
+        $this->affectations = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -223,6 +245,99 @@ class User implements UserInterface
     public function setPartenaire(?Partenaire $partenaire): self
     {
         $this->partenaire = $partenaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setRetrait($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getRetrait() === $this) {
+                $transaction->setRetrait(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransfert(): Collection
+    {
+        return $this->transfert;
+    }
+
+    public function addTransfert(Transaction $transfert): self
+    {
+        if (!$this->transfert->contains($transfert)) {
+            $this->transfert[] = $transfert;
+            $transfert->setTransfert($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransfert(Transaction $transfert): self
+    {
+        if ($this->transfert->contains($transfert)) {
+            $this->transfert->removeElement($transfert);
+            // set the owning side to null (unless already changed)
+            if ($transfert->getTransfert() === $this) {
+                $transfert->setTransfert(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Affectation[]
+     */
+    public function getAffectations(): Collection
+    {
+        return $this->affectations;
+    }
+
+    public function addAffectation(Affectation $affectation): self
+    {
+        if (!$this->affectations->contains($affectation)) {
+            $this->affectations[] = $affectation;
+            $affectation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAffectation(Affectation $affectation): self
+    {
+        if ($this->affectations->contains($affectation)) {
+            $this->affectations->removeElement($affectation);
+            // set the owning side to null (unless already changed)
+            if ($affectation->getUser() === $this) {
+                $affectation->setUser(null);
+            }
+        }
 
         return $this;
     }

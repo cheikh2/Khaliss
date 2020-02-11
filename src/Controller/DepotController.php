@@ -29,7 +29,7 @@ class DepotController
             $compte->setSolde($solde + $montant);
             return $data;
         }else{
-            throw new Exception("Le montant doit être superieur à 0");
+            throw new Exception("Le montant doit être au minimum 50");
         }
     }
 }

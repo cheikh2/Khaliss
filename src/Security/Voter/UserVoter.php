@@ -80,6 +80,6 @@ class UserVoter extends Voter
                       
         }
         
-        throw new \Exception(sprintf('Impossible d\'acceder "%s"', $attribute));
+        throw new \Exception(sprintf('Vous n\'etes pas autorisé d\'effectuer l\'action: %s sur cette ressource', $attribute));
     }
 }
