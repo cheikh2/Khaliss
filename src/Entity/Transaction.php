@@ -6,7 +6,24 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *  collectionOperations={
+ *        "get"={
+*                  "access_control"="is_granted('VIEW', object)",
+ *              },
+ *         "post"={
+ *             "access_control"="is_granted('ADD', object)",
+ * }
+ *     },
+ *   itemOperations={
+ *        "get"={"access_control"="is_granted('VIEW', object)",
+ * 
+ *      },
+ *      "put"={
+ *          "access_control"="is_granted('EDIT', object)",
+ *     
+ *      },
+ * },)
  * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
  */
 class Transaction
@@ -72,6 +89,11 @@ class Transaction
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="transfert")
      */
     private $transfert;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="transactions")
+     */
+    private $compte;
 
     public function getId(): ?int
     {
@@ -206,6 +228,18 @@ class Transaction
     public function setTransfert(?User $transfert): self
     {
         $this->transfert = $transfert;
+
+        return $this;
+    }
+
+    public function getCompte(): ?Compte
+    {
+        return $this->compte;
+    }
+
+    public function setCompte(?Compte $compte): self
+    {
+        $this->compte = $compte;
 
         return $this;
     }
