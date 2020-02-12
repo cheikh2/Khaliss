@@ -1,44 +1,49 @@
 <?php
 namespace App\DataPersister;
 
-use App\Entity\User;
-use App\DataPersister\UserDataPersister;
+
+use App\Entity\Compte;
+use App\Repository\ContratRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class DataPersister implements DataPersisterInterface
 {
 
     private $entityManager;
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $userPasswordEncoder, TokenStorageInterface $tokenStorage)
+    private $contrat;
+    public function __construct(EntityManagerInterface $entityManager, ContratRepository $contrat)
     {
-        $this->userPasswordEncoder = $userPasswordEncoder;
         $this->entityManager = $entityManager;
-        $this->tokenStorage = $tokenStorage;
+        $this->contrat = $contrat;
     }
 
     public function supports($data): bool
     {
-        return $data instanceof User;
+        return $data instanceof Compte;
     }
     
     /**
-     * @param User $data
+     * @param Compte $data
      */
     public function persist($data)
     {
         
-       /* if($data->getPassword()) {
-            $data->setPassword(
-                $this->userPasswordEncoder->encodePassword($data, $data->getPassword())
-            );
-            $data->eraseCredentials();
-        }*/
+       $term = $this->contrat->findAll();
+       $text = $term[0]->getTerme();
+
+       $nom = $data->getPartenaire()->getUsers()[0]->getNomcomplet();
+       $ninea = $data->getPartenaire()->getNinea();
+       $search = ["#nomComplet","#ninea"];
+       $replace = [$nom,$ninea];
+
+       $newtext = str_replace($search,$replace,$text);
     
         $this->entityManager->persist($data);
         $this->entityManager->flush();
+
+        return new JsonResponse($newtext);
 }
 
 

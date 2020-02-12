@@ -47,6 +47,11 @@ class Partenaire
      */
     private $comptes;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Contrat", inversedBy="partenaire", cascade={"persist", "remove"})
+     */
+    private $contrat;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -144,6 +149,18 @@ class Partenaire
                 $compte->setPartenaire(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getContrat(): ?Contrat
+    {
+        return $this->contrat;
+    }
+
+    public function setContrat(?Contrat $contrat): self
+    {
+        $this->contrat = $contrat;
 
         return $this;
     }
