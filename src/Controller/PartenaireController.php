@@ -1,14 +1,14 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Transaction;
+use App\Entity\Partenaire;
 use App\Controller\TransactionController;
 use App\Repository\TransactionRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
 
-class TransactionController{
+class PartenaireController{
 
 protected $tokenStorage;
 protected $ripo;
@@ -18,9 +18,9 @@ protected $ripo;
         $this->ripo=$ripo;
     }
 
-    public function __invoke(Transaction $data):Transaction
+    public function __invoke(Partenaire $data):Partenaire
     {  
-            
+        
     }
 }
 

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\UserController;
+use App\Controller\ImageController;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,7 +17,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  * @ApiResource(
  *  collectionOperations={
  *        "get"={
-*                  "access_control"="is_granted('VIEW', object)",
+*                 
  *              },
  *         "post"={
  *             "access_control"="is_granted('ADD', object)",
@@ -29,7 +30,25 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *      },
  *      "put"={
  *          "access_control"="is_granted('EDIT', object)",
- *     
+ *          "controller"=ImageController::class,
+ *             "deserialize"=false,
+ *             "openapi_context"={
+ *                 "requestBody"={
+ *                     "content"={
+ *                         "multipart/form-data"={
+ *                             "schema"={
+ *                                 "type"="object",
+ *                                 "properties"={
+ *                                     "file"={
+ *                                         "type"="string",
+ *                                         "format"="binary"
+ *                                     }
+ *                                 }
+ *                             }
+ *                         }
+ *                     }
+ *                 }
+ *              }
  *      },
  * },
  * )
@@ -56,7 +75,6 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="json")
-     * @Groups({"read","write"})
      */
     private $roles = [];
 
@@ -87,12 +105,6 @@ class User implements UserInterface
     private $nomComplet;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"read","write"})
-     */
-    private $profil;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="users", cascade={"persist"})
      */
     private $partenaire;
@@ -111,6 +123,11 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Affectation", mappedBy="user")
      */
     private $affectations;
+
+    /**
+     * @ORM\Column(type="blob", nullable=true)
+     */
+    private $image;
 
     public function __construct()
     {
@@ -225,18 +242,6 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getProfil(): ?string
-    {
-        return $this->profil;
-    }
-
-    public function setProfil(string $profil): self
-    {
-        $this->profil = $profil;
-
-        return $this;
-    }
-
     public function getPartenaire(): ?Partenaire
     {
         return $this->partenaire;
@@ -338,6 +343,18 @@ class User implements UserInterface
                 $affectation->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    public function setImage($image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

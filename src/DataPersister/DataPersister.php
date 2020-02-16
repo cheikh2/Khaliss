@@ -29,8 +29,10 @@ class DataPersister implements DataPersisterInterface
      */
     public function persist($data)
     {
-        $cont = $data->getPartenaire()->getId();
         // generation du contrat
+
+        $cont = $data->getPartenaire()->getId();
+    
        $term = $this->contrat->findAll();
        $text = $term[0]->getTerme();
 

@@ -6,7 +6,24 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+  * @ApiResource(
+ *  collectionOperations={
+ *        "get"={
+*                  
+ *              },
+ *         "post"={
+ *             "access_control"="is_granted('ADD', object)",
+ * }
+ *     },
+ *   itemOperations={
+ *        "get"={"access_control"="is_granted('VIEW', object)",
+ * 
+ *      },
+ *      "put"={
+ *          "access_control"="is_granted('EDIT', object)",
+ *     
+ *      },
+ * },)
  * @ORM\Entity(repositoryClass="App\Repository\AffectationRepository")
  */
 class Affectation

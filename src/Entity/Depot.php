@@ -14,17 +14,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *               
 *               },
 *               "POST"={
- *                  
+ *                  "access_control"="is_granted('ADD',  object)",
 *                    "controller"=DepotController::class,
 *                }
 * 
 *     },
 *  itemOperations={
 *          "GET"={
-*                "access_control"="is_granted('VIEW',  previous_object)",
+*                "access_control"="is_granted('VIEW',  object)",
 *               },
 *          "put"={
- *              "access_control"="is_granted('EDIT', previous_object)",
+ *              "access_control"="is_granted('EDIT', object)",
  *          },
  *     },
  * )

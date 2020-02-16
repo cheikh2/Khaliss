@@ -13,27 +13,24 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     normalizationContext={"groups"={"read"}},
  *    denormalizationContext={"groups"={"write"}},
- * collectionOperations={
- *          
- *         "GET"={
- *               
-
-*               },
-*               "POST"={
- *                 
-*                  "controller"=CompteController::class,  
-
-*                }
-* 
-*     },
-*  itemOperations={
-*          "GET"={
-*                   "access_control"="is_granted('VIEW',  previous_object)",
-*               },
-*          "put"={
- *              "access_control"="is_granted('EDIT', previous_object)",
- *          },
+  *  collectionOperations={
+ *        "get"={
+*                  "access_control"="is_granted('VIEW', object)",
+ *              },
+ *         "post"={
+ *             "access_control"="is_granted('ADD', object)",
+ *              "controller"=CompteController::class
+ * }
  *     },
+ *   itemOperations={
+ *        "get"={"access_control"="is_granted('VIEW', object)",
+ * 
+ *      },
+ *      "put"={
+ *          "access_control"="is_granted('EDIT', object)",
+ *     
+ *      },
+ * },
  * )
  * @ORM\Entity(repositoryClass="App\Repository\CompteRepository")
  */

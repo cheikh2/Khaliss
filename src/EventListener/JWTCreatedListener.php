@@ -30,10 +30,16 @@ class JWTCreatedListener
     {
         /** @var $user \AppBundle\Entity\User */
         $user = $event->getUser();
-        if(!$user->getIsActive()){
+
+        if($user->getPartenaire()!=null && !$user->getPartenaire()->getUsers()[0]->getIsActive()){
+            throw new DisabledException('Compte bloqué');
+        }
+        // bloqué les utilisateurs
+        elseif(!$user->getIsActive()){
             throw new DisabledException('count is');
         }
 
+       
         // merge with existing event data
         $payload = array_merge(
             $event->getData(),
