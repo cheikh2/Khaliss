@@ -88,12 +88,18 @@ class Compte
      */
     private $transactions;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="compteRetrai")
+     */
+    private $compteRetrait;
+
     public function __construct()
     {
         $this->depots = new ArrayCollection();
         $this->createdAt = new \DateTime();
         $this->affectations = new ArrayCollection();
         $this->transactions = new ArrayCollection();
+        $this->compteRetrait = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -247,6 +253,37 @@ class Compte
             // set the owning side to null (unless already changed)
             if ($transaction->getCompte() === $this) {
                 $transaction->setCompte(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getCompteRetrait(): Collection
+    {
+        return $this->compteRetrait;
+    }
+
+    public function addCompteRetrait(Transaction $compteRetrait): self
+    {
+        if (!$this->compteRetrait->contains($compteRetrait)) {
+            $this->compteRetrait[] = $compteRetrait;
+            $compteRetrait->setCompteRetrai($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompteRetrait(Transaction $compteRetrait): self
+    {
+        if ($this->compteRetrait->contains($compteRetrait)) {
+            $this->compteRetrait->removeElement($compteRetrait);
+            // set the owning side to null (unless already changed)
+            if ($compteRetrait->getCompteRetrai() === $this) {
+                $compteRetrait->setCompteRetrai(null);
             }
         }
 

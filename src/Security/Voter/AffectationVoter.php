@@ -26,14 +26,13 @@ class AffectationVoter extends Voter
         $role = $user->getRole()->getLibelle();
         $roleAff = $affectation->getUser()->getRole()->getLibelle();
 
-        if ($role ==  "PARTENAIRE") {
+        if ($role ==  "PARTENAIRE" || "ADMIN_PARTENAIRE") {
             if($roleAff == "USER_PARTENAIRE"){
             return true;        
         }else{
             throw new \Exception(sprintf('Affectation non autorisée'));
         }
     }
-     
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case 'ADD':

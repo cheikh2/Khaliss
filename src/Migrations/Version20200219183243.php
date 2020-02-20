@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200212010036 extends AbstractMigration
+final class Version20200219183243 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,9 +22,7 @@ final class Version20200212010036 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE partenaire ADD contrat_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE partenaire ADD CONSTRAINT FK_32FFA3731823061F FOREIGN KEY (contrat_id) REFERENCES contrat (id)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_32FFA3731823061F ON partenaire (contrat_id)');
+        $this->addSql('ALTER TABLE transaction ADD montant_percu INT DEFAULT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -32,8 +30,6 @@ final class Version20200212010036 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE partenaire DROP FOREIGN KEY FK_32FFA3731823061F');
-        $this->addSql('DROP INDEX UNIQ_32FFA3731823061F ON partenaire');
-        $this->addSql('ALTER TABLE partenaire DROP contrat_id');
+        $this->addSql('ALTER TABLE transaction DROP montant_percu');
     }
 }

@@ -129,11 +129,17 @@ class User implements UserInterface
      */
     private $image;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Affectation", mappedBy="userAffect")
+     */
+    private $affecteurs;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
         $this->transfert = new ArrayCollection();
         $this->affectations = new ArrayCollection();
+        $this->affecteurs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -355,6 +361,37 @@ class User implements UserInterface
     public function setImage($image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Affectation[]
+     */
+    public function getAffecteurs(): Collection
+    {
+        return $this->affecteurs;
+    }
+
+    public function addAffecteur(Affectation $affecteur): self
+    {
+        if (!$this->affecteurs->contains($affecteur)) {
+            $this->affecteurs[] = $affecteur;
+            $affecteur->setUserAffect($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAffecteur(Affectation $affecteur): self
+    {
+        if ($this->affecteurs->contains($affecteur)) {
+            $this->affecteurs->removeElement($affecteur);
+            // set the owning side to null (unless already changed)
+            if ($affecteur->getUserAffect() === $this) {
+                $affecteur->setUserAffect(null);
+            }
+        }
 
         return $this;
     }

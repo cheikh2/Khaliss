@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200211031256 extends AbstractMigration
+final class Version20200217232825 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,9 +22,9 @@ final class Version20200211031256 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE affectation ADD compte_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE affectation ADD CONSTRAINT FK_F4DD61D3F2C56620 FOREIGN KEY (compte_id) REFERENCES compte (id)');
-        $this->addSql('CREATE INDEX IDX_F4DD61D3F2C56620 ON affectation (compte_id)');
+        $this->addSql('ALTER TABLE tarifs DROP FOREIGN KEY FK_F9B8C49677E1607F');
+        $this->addSql('DROP INDEX UNIQ_F9B8C49677E1607F ON tarifs');
+        $this->addSql('ALTER TABLE tarifs DROP transactions_id');
     }
 
     public function down(Schema $schema) : void
@@ -32,8 +32,8 @@ final class Version20200211031256 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE affectation DROP FOREIGN KEY FK_F4DD61D3F2C56620');
-        $this->addSql('DROP INDEX IDX_F4DD61D3F2C56620 ON affectation');
-        $this->addSql('ALTER TABLE affectation DROP compte_id');
+        $this->addSql('ALTER TABLE tarifs ADD transactions_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE tarifs ADD CONSTRAINT FK_F9B8C49677E1607F FOREIGN KEY (transactions_id) REFERENCES transaction (id)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_F9B8C49677E1607F ON tarifs (transactions_id)');
     }
 }

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200212034151 extends AbstractMigration
+final class Version20200218092327 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,9 +22,7 @@ final class Version20200212034151 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE transaction ADD compte_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE transaction ADD CONSTRAINT FK_723705D1F2C56620 FOREIGN KEY (compte_id) REFERENCES compte (id)');
-        $this->addSql('CREATE INDEX IDX_723705D1F2C56620 ON transaction (compte_id)');
+        $this->addSql('ALTER TABLE transaction ADD part_etat INT DEFAULT NULL, ADD part_systeme INT DEFAULT NULL, ADD part_envoyeur INT DEFAULT NULL, ADD part_retreur INT DEFAULT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -32,8 +30,6 @@ final class Version20200212034151 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE transaction DROP FOREIGN KEY FK_723705D1F2C56620');
-        $this->addSql('DROP INDEX IDX_723705D1F2C56620 ON transaction');
-        $this->addSql('ALTER TABLE transaction DROP compte_id');
+        $this->addSql('ALTER TABLE transaction DROP part_etat, DROP part_systeme, DROP part_envoyeur, DROP part_retreur');
     }
 }

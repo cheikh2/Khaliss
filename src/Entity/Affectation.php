@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\AffectationController;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
   * @ApiResource(
@@ -12,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 *                  
  *              },
  *         "post"={
+ *             "controller"=AffectationController::class,
  *             "access_control"="is_granted('ADD', object)",
  * }
  *     },
@@ -54,6 +56,11 @@ class Affectation
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="affectations")
      */
     private $compte;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="affecteurs")
+     */
+    private $affecteur;
 
     public function getId(): ?int
     {
@@ -104,6 +111,18 @@ class Affectation
     public function setCompte(?Compte $compte): self
     {
         $this->compte = $compte;
+
+        return $this;
+    }
+
+    public function getAffecteur(): ?User
+    {
+        return $this->affecteur;
+    }
+
+    public function setAffecteur(?User $affecteur): self
+    {
+        $this->affecteur = $affecteur;
 
         return $this;
     }

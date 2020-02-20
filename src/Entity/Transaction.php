@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\RetraitController;
+use App\Controller\TransactionController;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ApiResource(
@@ -12,7 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 *                  "access_control"="is_granted('VIEW', object)",
  *              },
  *         "post"={
- *             "access_control"="is_granted('ADD', object)",
+ *              "controller"=TransactionController::class,
+ *             
  * }
  *     },
  *   itemOperations={
@@ -20,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
  * 
  *      },
  *      "put"={
- *          "access_control"="is_granted('EDIT', object)",
+ *          "controller"=RetraitController::class,
  *     
  *      },
  * },)
@@ -63,17 +66,17 @@ class Transaction
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $CNI_Envoyé;
+    private $CNI_Envoye;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $nomC_Envoyé;
+    private $nomC_Envoye;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $tel_Envoyé;
+    private $tel_Envoye;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -94,6 +97,47 @@ class Transaction
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="transactions")
      */
     private $compte;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $partEtat;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $partSysteme;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $partEnvoyeur;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $partRetreur;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="compteRetrait")
+     */
+    private $compteRetrai;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $montantPercu;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $statut;
+
+    public function __construct()
+    {
+        $this->statut = true;
+
+    }
 
     public function getId(): ?int
     {
@@ -160,38 +204,38 @@ class Transaction
         return $this;
     }
 
-    public function getCNIEnvoyé(): ?int
+    public function getCNIEnvoye(): ?int
     {
-        return $this->CNI_Envoyé;
+        return $this->CNI_Envoye;
     }
 
-    public function setCNIEnvoyé(?int $CNI_Envoyé): self
+    public function setCNIEnvoye(?int $CNI_Envoye): self
     {
-        $this->CNI_Envoyé = $CNI_Envoyé;
+        $this->CNI_Envoye = $CNI_Envoye;
 
         return $this;
     }
 
-    public function getNomCEnvoyé(): ?string
+    public function getNomCEnvoye(): ?string
     {
-        return $this->nomC_Envoyé;
+        return $this->nomC_Envoye;
     }
 
-    public function setNomCEnvoyé(string $nomC_Envoyé): self
+    public function setNomCEnvoye(string $nomC_Envoye): self
     {
-        $this->nomC_Envoyé = $nomC_Envoyé;
+        $this->nomC_Envoye = $nomC_Envoye;
 
         return $this;
     }
 
-    public function getTelEnvoyé(): ?int
+    public function getTelEnvoye(): ?int
     {
-        return $this->tel_Envoyé;
+        return $this->tel_Envoye;
     }
 
-    public function setTelEnvoyé(int $tel_Envoyé): self
+    public function setTelEnvoye(int $tel_Envoye): self
     {
-        $this->tel_Envoyé = $tel_Envoyé;
+        $this->tel_Envoye = $tel_Envoye;
 
         return $this;
     }
@@ -243,4 +287,89 @@ class Transaction
 
         return $this;
     }
+
+    public function getPartEtat(): ?int
+    {
+        return $this->partEtat;
+    }
+
+    public function setPartEtat(?int $partEtat): self
+    {
+        $this->partEtat = $partEtat;
+
+        return $this;
+    }
+
+    public function getPartSysteme(): ?int
+    {
+        return $this->partSysteme;
+    }
+
+    public function setPartSysteme(?int $partSysteme): self
+    {
+        $this->partSysteme = $partSysteme;
+
+        return $this;
+    }
+
+    public function getPartEnvoyeur(): ?int
+    {
+        return $this->partEnvoyeur;
+    }
+
+    public function setPartEnvoyeur(?int $partEnvoyeur): self
+    {
+        $this->partEnvoyeur = $partEnvoyeur;
+
+        return $this;
+    }
+
+    public function getPartRetreur(): ?int
+    {
+        return $this->partRetreur;
+    }
+
+    public function setPartRetreur(?int $partRetreur): self
+    {
+        $this->partRetreur = $partRetreur;
+
+        return $this;
+    }
+
+    public function getCompteRetrai(): ?Compte
+    {
+        return $this->compteRetrai;
+    }
+
+    public function setCompteRetrai(?Compte $compteRetrai): self
+    {
+        $this->compteRetrai = $compteRetrai;
+
+        return $this;
+    }
+
+    public function getMontantPercu(): ?int
+    {
+        return $this->montantPercu;
+    }
+
+    public function setMontantPercu(?int $montantPercu): self
+    {
+        $this->montantPercu = $montantPercu;
+
+        return $this;
+    }
+
+    public function getStatut(): ?bool
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(bool $statut): self
+    {
+        $this->statut = $statut;
+
+        return $this;
+    }
+
 }
