@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller;
 
+use App\Osms;
+use DateTime;
 use Exception;
 use App\Entity\Transaction;
 use App\Repository\TarifsRepository;
@@ -25,9 +27,10 @@ protected $tarifsRepo;
 
     public function __invoke(Transaction $data, TarifsRepository $tarifsRepo):Transaction
     {  
+        $date=new DateTime();
+       
         // gérer les frais
         $montantTansact = $data->getMontant();
-        //var_dump( $montantTansact);die();
         $tarifs = $tarifsRepo->findByTarifs($montantTansact);
         $frais = $tarifs[0]->getValeur();
         $data->setFrais($frais);
@@ -45,45 +48,67 @@ protected $tarifsRepo;
         $partSys = $frais*0.3;
         $data->setPartSysteme($partSys);
 
-        $partEnvoyeur = $frais*0.2;
+        $partEnvoyeur = $frais*0.1;
         $data->setPartEnvoyeur($partEnvoyeur);
 
-
-
-
-        // user qui fait retrait
-            $userRetrait = $this->tokenStorage->getToken()->getUser();
-            $data->setTransfert($userRetrait);
 
          //compte user connecté
         $CompteUserConnect = $this->tokenStorage->getToken()->getUser()->getAffectations()[0]->getCompte();
         $data->setCompte($CompteUserConnect);
 
-        // user qui fait retrait
+        // user qui fait le transfert
         $userTransf = $this->tokenStorage->getToken()->getUser();
-        $data->setRetrait($userTransf);
+        $data->setTransfert($userTransf);
 
         // Code de transfert
-            $code=date_format($data->getCompte()->getCreatedAt(),"hisYms");
-            $data->setCode("CT".$code."KOM");
+            $code=date_format($data->getCompte()->getCreatedAt(),"hisms");
+            $data->setCode($code);
 
             $frai = $data->getFrais();
 
             $solCompte = $data->getCompte()->getSolde();
             $montTrans = $data->getMontant();
             $montTotalT = $montTrans - $frai;
-            //var_dump($montTotalT);die();
-
+        
             $compte=$data->getCompte();
             $cni = $data->getCNIEnvoye();
-            //var_dump($compte);die();
 
-            if($cni == null AND $solCompte >= $montTrans){
+            // recuperation des dates d'affectations
+            $debutAff=$data->getCompte()->getAffectations()[0]->getDateAffectation();
+            $finAff=$data->getCompte()->getAffectations()[0]->getDateExpiration();
+            
+
+            if($cni == null){
                 $compte->setSolde($solCompte - $montTotalT);
-                return $data;
-            }elseif($cni != null){
-                $compte->setSolde($solCompte + $montTrans);
-                return $data;
+                if( $solCompte < $montTrans){
+                    throw new Exception("solde insuffisant");
+                    
+                }
+                if($debutAff>$date || $finAff<$date){
+                    throw new Exception("Date d'affection non valide pour ce compte");
+                }
+                $config = array(
+                    'clientId' => 'YBwMEAU6OK0siaQoYgwc48RtAelb8Wdr',
+                    'clientSecret' => 'uwdidO9H6IjvVFn'
+                );
+                
+                $osms = new Osms($config);
+                
+                // retrieve an access token
+                $response = $osms->getTokenFromConsumerKey();
+                
+                if (!empty($response['access_token'])) {
+                    $senderAddress = 'tel:+221'.$data->getTelEnvoyeur();
+                    $receiverAddress = 'tel:+221'.$data->getTelEnvoye();
+                    $message = 'Bienvenu chez komkom ' . $data->getNomCEnvoyeur() ." vient de vous envoyer ". $data->getMontantPercu(). " FCFA le code de retraie est: ".
+                    $data->getCode(). " komkom vous remercie ";
+                    $senderName = 'komkom';
+                
+                    $osms->sendSMS($senderAddress, $receiverAddress, $message, $senderName);
+                } else {
+                    // error
+                }
+                return $data;    
             }
             else{
                 throw new Exception("Transaction impossible");

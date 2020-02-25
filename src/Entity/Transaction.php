@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Controller\RetraitController;
 use App\Controller\TransactionController;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -39,6 +40,7 @@ class Transaction
     private $id;
 
     /**
+     * @Assert\Regex("/^[a-zA-Z0-9_]+$/")
      * @ORM\Column(type="string", length=255)
      */
     private $nomC_Envoyeur;
@@ -49,6 +51,10 @@ class Transaction
     private $CNI_Envoyeur;
 
     /**
+     * @Assert\Regex(
+     * pattern="#^7[0,6,7,8]([0-9]){7}$#",
+     * message="Votre telephone n'est pas valide"
+     * )
      * @ORM\Column(type="integer")
      */
     private $tel_Envoyeur;
@@ -69,11 +75,16 @@ class Transaction
     private $CNI_Envoye;
 
     /**
+     * @Assert\Regex("/^[a-zA-Z0-9_]+$/")
      * @ORM\Column(type="string", length=255)
      */
     private $nomC_Envoye;
 
     /**
+     * @Assert\Regex(
+     * pattern="#^7[0,6,7,8]([0-9]){7}$#",
+     * message="Votre telephone n'est pas valide"
+     * )
      * @ORM\Column(type="integer")
      */
     private $tel_Envoye;
@@ -132,6 +143,7 @@ class Transaction
      * @ORM\Column(type="boolean")
      */
     private $statut;
+
 
     public function __construct()
     {
