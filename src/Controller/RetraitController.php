@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller;
 
-
 use DateTime;
 use Exception;
 use Twilio\Rest\Client;
@@ -51,7 +50,7 @@ protected $tarifsRepo;
             $CompteUserConnect->setSolde($solde + $montantPercu);
             $data->setStatut(false);
 
-  /*    // Your Account SID and Auth Token from twilio.com/console
+  // Your Account SID and Auth Token from twilio.com/console
       $sid = 'AC64f740168529113f75194eff6c8d0f08';
       $token = '9ab0ee745849699882fb55dba2591e39';
       $client = new Client($sid, $token);
@@ -59,14 +58,14 @@ protected $tarifsRepo;
       // Use the client to do fun stuff like send text messages!
       $client->messages->create(
     // the number you'd like to send the message to
-    '+221 .$data->getTelEnvoyeur()',
+    '+221' .$data->getTelEnvoyeur(),
     array(
         // A Twilio phone number you purchased at twilio.com/console
         'from' => '+12055760689',
         // the body of the text message you'd like to send
-        'body' => 'Hey Jenny! Good luck on the bar exam!'
+        'body' => 'La somme que avez envoyé au' .$data->getTelEnvoye(), 'vient d\' être retirer!'
     )
-);*/
+);
             return $data;
          }else{
             throw new HttpException(403,'Retrait déjà éffectué');

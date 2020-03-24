@@ -8,34 +8,28 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
-final class ImageController 
+final class BlogController 
 {
 
-    public function __invoke(User $data, UserRepository $use): User
+    public function __invoke(UserRepository $use)
 {
  
 
   ###########################DECLARATION DES VARIABLES#####################
        ##########################################################################*
        //Je recuppere l'image
-       if(isset($_FILES['image'])){
-        $image=file_get_contents($_FILES['image']['tmp_name']);
-        //url
+       
         $url=$_SERVER["REQUEST_URI"]; 
         $ex=explode("/",$url);
-        $id=$ex[4];
+        $id=$ex[3];
         $data=$use->find($id);
       //explose de l'url
+      $data->setImage(base64_encode(stream_get_contents($data->getImage())));
         
         ###########################TRAITEMENT DES DONNEES#####################
          ##########################################################################
-        $data->setImage(($image));
         return $data;
      
-      
-    }else{
-      return new JsonResponse($_FILES);
-    }
         
 }
 

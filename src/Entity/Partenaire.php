@@ -5,13 +5,14 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- * normalizationContext={"groups"={"read"}},
- * denormalizationContext={"groups"={"write"}}
+ *   normalizationContext={"groups"={"part"}},
+ *   denormalizationContext={"groups"={"par"}},
  * )
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
  */
@@ -26,19 +27,19 @@ class Partenaire
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read","write"})
+     * @Groups({"compt","com"})
      */
     private $ninea;
 
     /**
+     * @Groups({"compt","com"})
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read","write"})
      */
     private $rc;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="partenaire", cascade={"persist"})
-     * @Groups({"read","write"})
+     * @Groups({"compt","com"})
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="partenaire", cascade={"persist"}) 
      */
     private $users;
 
@@ -47,7 +48,7 @@ class Partenaire
      */
     private $comptes;
 
-    /**
+    /** 
      * @ORM\OneToOne(targetEntity="App\Entity\Contrat", inversedBy="partenaire", cascade={"persist", "remove"})
      */
     private $contrat;

@@ -3,10 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\BlagController;
+use App\Controller\BlogController;
 use App\Controller\UserController;
 use App\Controller\ImageController;
+use App\Controller\StatuController;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,22 +20,14 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
  * @ApiResource(
+ * normalizationContext={"groups"={"read"}},
+ * denormalizationContext={"groups"={"write"}},
  *  collectionOperations={
- *        "get"={
-*                 
- *              },
- *         "post"={
- *             "access_control"="is_granted('ADD', object)",
- *              "controller"=UserController::class
- * }
- *     },
- *   itemOperations={
- *        "get"={"access_control"="is_granted('VIEW', object)",
- * 
- *      },
- *      "put"={
- *          "access_control"="is_granted('EDIT', object)",
- *          "controller"=ImageController::class,
+ * "mo_image"={
+ *  "method"="post",
+ *         "path"="/users/image/{id}",
+ *             "controller"=ImageController::class,
+ *              "normalization_context"={"groups"={"img"}},
  *             "deserialize"=false,
  *             "openapi_context"={
  *                 "requestBody"={
@@ -49,10 +45,35 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *                         }
  *                     }
  *                 }
- *              }
- *      },
+ *             }
+ *         },  
+ *        "get"={
+ *               "controller"=BlagController::class,
+ *              },
+ *         "post"={
+ *             "access_control"="is_granted('ADD', object)",
+ *              "controller"=UserController::class
+ * }
+ *     },
+ *   itemOperations={
+ *    "bloquer"={
+ *      "method"="PUT",
+ *      "path"="/bloqueUser/{id}",
+ *      "normalization_context"={"groups"={"read"}},
+ *      "controller"=StatuController::class,
  * },
- * )
+ *        "get"={"access_control"="is_granted('VIEW', object)",
+ *          "controller"=BlogController::class,
+ *         
+
+ *      },
+ *      "put"={
+ *          "access_control"="is_granted('EDIT', object)",
+ * },
+ *               
+ *     },
+ *    
+ *     )
  * @UniqueEntity(
  * fields={"username"},
  *  message="username déjà utilisé.")
@@ -68,13 +89,15 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @Groups({"compt","com","read","write"})
      * @Assert\Regex("/^[a-zA-Z0-9_]+$/")
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"read","write"})
+     * 
      */
     private $username;
 
     /**
+     * @Groups({"role","write"})
      * @ORM\Column(type="json")
      */
     private $roles = [];
@@ -82,31 +105,31 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Groups({"read","write"})
+     * @Groups({"compt","com","read","write"})
      */
     private $password;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Role", inversedBy="users", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
-     * @Groups({"read","write"})
      */
     private $role;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"read","write"})
+     * @Groups({"compt","read","write"})
      */
     private $isActive;
 
     /**
      * @Assert\Regex("/^[a-zA-Z0-9_]+$/")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read","write"})
+     * @Groups({"compt","com","read","write"})
      */
     private $nomComplet;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="users", cascade={"persist"})
      */
     private $partenaire;
@@ -142,6 +165,9 @@ class User implements UserInterface
         $this->transfert = new ArrayCollection();
         $this->affectations = new ArrayCollection();
         $this->affecteurs = new ArrayCollection();
+        $this->depots = new ArrayCollection();
+        $this->isActive = true;
+        
     }
 
     public function getId(): ?int
@@ -258,6 +284,37 @@ class User implements UserInterface
     public function setPartenaire(?Partenaire $partenaire): self
     {
         $this->partenaire = $partenaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepots(): Collection
+    {
+        return $this->depots;
+    }
+
+    public function addDepot(Depot $depot): self
+    {
+        if (!$this->depots->contains($depot)) {
+            $this->depots[] = $depot;
+            $depot->setUserDepot($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepot(Depot $depot): self
+    {
+        if ($this->depots->contains($depot)) {
+            $this->depots->removeElement($depot);
+            // set the owning side to null (unless already changed)
+            if ($depot->getUserDepot() === $this) {
+                $depot->setUserDepot(null);
+            }
+        }
 
         return $this;
     }

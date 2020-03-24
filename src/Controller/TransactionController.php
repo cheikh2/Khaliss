@@ -89,7 +89,7 @@ protected $tarifsRepo;
                 }
                 $config = array(
                     'clientId' => 'YBwMEAU6OK0siaQoYgwc48RtAelb8Wdr',
-                    'clientSecret' => 'uwdidO9H6IjvVFn'
+                    'clientSecret' => 'uwdidO9H6IjvVFn2'
                 );
                 
                 $osms = new Osms($config);

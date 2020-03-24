@@ -9,6 +9,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
+ * normalizationContext={"groups"={"depot"}},
+ *   denormalizationContext={"groups"={"depo"}},
  *  collectionOperations={
  *         "GET"={
  *               
@@ -36,27 +38,30 @@ class Depot
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"depot"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"read","write"})
+     * @Groups({"compt","com","depo","depot"})
      */
     private $montant;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"read","write"})
+     * @Groups({"depot"})
      */
     private $dateDepot;
 
     /**
+     * @Groups({"depot","depo"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="depots", cascade={"persist"})
      */
     private $compte;
 
     /**
+     * @Groups({"depot","depo"})
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="depots", cascade={"persist"})
      */
     private $user;

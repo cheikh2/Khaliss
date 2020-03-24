@@ -22,7 +22,7 @@ class DepotController
         $userConnect = $this->tokenStorage->getToken()->getUser();
         $data->setUser($userConnect);
 
-        $montant=$data->getMontant();
+        $montant = $data->getMontant();  
         $compte=$data->getCompte();
         $solde=$compte->getSolde();
         if($montant >= 50){

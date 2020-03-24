@@ -4,22 +4,24 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\CompteController;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"read"}},
- *    denormalizationContext={"groups"={"write"}},
+ *  normalizationContext={"groups"={"compt"}},
+ *   denormalizationContext={"groups"={"com"}},
   *  collectionOperations={
  *        "get"={
-*                  "access_control"="is_granted('VIEW', object)",
+*                  
  *              },
  *         "post"={
  *             "access_control"="is_granted('ADD', object)",
- *              "controller"=CompteController::class
+ *              "controller"=CompteController::class,
  * }
  *     },
  *   itemOperations={
@@ -32,6 +34,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      },
  * },
  * )
+ * 
  * @ORM\Entity(repositoryClass="App\Repository\CompteRepository")
  */
 class Compte
@@ -40,36 +43,41 @@ class Compte
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"compt"})
+     * 
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read"})
+     * @Groups({"compt"})
      */
     private $numCompte;
 
     /**
+     * @Groups({"compt"}))
      * @ORM\Column(type="integer")
      */
     private $solde;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"read","write"})
+     * @Groups({"compt"})
      */
     private $createdAt;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="compte", cascade={"persist"})
-     * @Groups({"read","write"})
+     * @Groups({"compt","com"})
      */
     private $depots;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="comptes", cascade={"persist"})
+     * @Groups({"compt","com"})
+     * @ApiFilter(SearchFilter::class, properties={"partenaire.ninea": "exact"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="comptes", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"read","write"})
+     * 
      */
     private $partenaire;
 
