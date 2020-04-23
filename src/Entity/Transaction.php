@@ -5,14 +5,17 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\RetraitController;
 use App\Controller\TransactionController;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource(
  *  collectionOperations={
  *        "get"={
-*                  "access_control"="is_granted('VIEW', object)",
+ *                  
  *              },
  *         "post"={
  *              "controller"=TransactionController::class,
@@ -20,14 +23,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * }
  *     },
  *   itemOperations={
- *        "get"={"access_control"="is_granted('VIEW', object)",
+ *        "get"={
+ *              "access_control"="is_granted('VIEW', object)",
  * 
  *      },
  *      "put"={
  *          "controller"=RetraitController::class,
  *     
  *      },
- * },)
+ * },
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
  */
 class Transaction
@@ -60,7 +65,8 @@ class Transaction
     private $tel_Envoyeur;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ApiFilter(SearchFilter::class, properties={"code": "exact"})
+     * @ORM\Column(type="string")
      */
     private $code;
 
@@ -86,6 +92,7 @@ class Transaction
      * message="Votre telephone n'est pas valide"
      * )
      * @ORM\Column(type="integer")
+     * 
      */
     private $tel_Envoye;
 
@@ -144,10 +151,16 @@ class Transaction
      */
     private $statut;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateTrans;
+
 
     public function __construct()
     {
         $this->statut = true;
+        $this->dateTrans = new \DateTime();
 
     }
 
@@ -380,6 +393,18 @@ class Transaction
     public function setStatut(bool $statut): self
     {
         $this->statut = $statut;
+
+        return $this;
+    }
+
+    public function getDateTrans(): ?\DateTimeInterface
+    {
+        return $this->dateTrans;
+    }
+
+    public function setDateTrans(\DateTimeInterface $dateTrans): self
+    {
+        $this->dateTrans = $dateTrans;
 
         return $this;
     }

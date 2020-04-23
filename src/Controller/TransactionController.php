@@ -28,11 +28,12 @@ protected $tarifsRepo;
     public function __invoke(Transaction $data, TarifsRepository $tarifsRepo):Transaction
     {  
         $date=new DateTime();
-       
+
         // gérer les frais
         $montantTansact = $data->getMontant();
-        $tarifs = $tarifsRepo->findByTarifs($montantTansact);
+        $tarifs =$this->tarifsRepo->findTarifs($montantTansact);
         $frais = $tarifs[0]->getValeur();
+       // var_dump($frais);die();
         $data->setFrais($frais);
 
         $montantPercu= $montantTansact - $frais;
@@ -51,17 +52,17 @@ protected $tarifsRepo;
         $partEnvoyeur = $frais*0.1;
         $data->setPartEnvoyeur($partEnvoyeur);
 
-
          //compte user connecté
         $CompteUserConnect = $this->tokenStorage->getToken()->getUser()->getAffectations()[0]->getCompte();
         $data->setCompte($CompteUserConnect);
 
+        
         // user qui fait le transfert
         $userTransf = $this->tokenStorage->getToken()->getUser();
         $data->setTransfert($userTransf);
 
         // Code de transfert
-            $code=date_format($data->getCompte()->getCreatedAt(),"hisms");
+            $code=date_format($data->getDateTrans(),"k.hisi");
             $data->setCode($code);
 
             $frai = $data->getFrais();
@@ -76,17 +77,26 @@ protected $tarifsRepo;
             // recuperation des dates d'affectations
             $debutAff=$data->getCompte()->getAffectations()[0]->getDateAffectation();
             $finAff=$data->getCompte()->getAffectations()[0]->getDateExpiration();
+ 
+            // recuperation du role du user 
+             $role = $data->getTransfert()->getRoles()[0];
+          //  var_dump($role);die();
             
-
             if($cni == null){
-                $compte->setSolde($solCompte - $montTotalT);
-                if( $solCompte < $montTrans){
-                    throw new Exception("solde insuffisant");
+                if($role== "ADMIN_PARTENAIRE" || $role== "USER_PARTENAIRE"){
+                    $compte->setSolde($solCompte - $montTotalT);
+                        if( $solCompte < $montTrans){
+                            throw new Exception("solde insuffisant");
                     
                 }
+                
                 if($debutAff>$date || $finAff<$date){
                     throw new Exception("Date d'affection non valide pour ce compte");
                 }
+                
+               // if($role== "PARTENAIRE"){}
+
+
                 $config = array(
                     'clientId' => 'YBwMEAU6OK0siaQoYgwc48RtAelb8Wdr',
                     'clientSecret' => 'uwdidO9H6IjvVFn2'
@@ -113,7 +123,7 @@ protected $tarifsRepo;
             else{
                 throw new Exception("Transaction impossible");
             }
-
+        }
             
     }
 }

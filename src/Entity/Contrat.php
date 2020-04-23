@@ -23,11 +23,6 @@ class Contrat
      */
     private $terme;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Partenaire", mappedBy="contrat", cascade={"persist", "remove"})
-     */
-    private $partenaire;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -45,22 +40,5 @@ class Contrat
         return $this;
     }
 
-    public function getPartenaire(): ?Partenaire
-    {
-        return $this->partenaire;
-    }
-
-    public function setPartenaire(?Partenaire $partenaire): self
-    {
-        $this->partenaire = $partenaire;
-
-        // set (or unset) the owning side of the relation if necessary
-        $newContrat = null === $partenaire ? null : $this;
-        if ($partenaire->getContrat() !== $newContrat) {
-            $partenaire->setContrat($newContrat);
-        }
-
-        return $this;
-    }
 }
 

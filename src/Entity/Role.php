@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Controller\RoleController;
+use App\Controller\RolesController;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,8 +11,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- * normalizationContext={"groups"={"role"}},
- * denormalizationContext={"groups"={"write"}},
+ *  collectionOperations={
+ *          "get"={
+ *           
+ *         }
+ * }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
  */
@@ -22,24 +25,28 @@ class Role
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"role"})
      */
     private $id;
 
     /**
-     * @Groups({"role"})
      * @ORM\Column(type="string", length=255)
      */
     private $libelle;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="role")
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="role", cascade={"persist"})
      */
     private $users;
+    
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getLibelle();
     }
 
     public function getId(): ?int
@@ -47,7 +54,8 @@ class Role
         return $this->id;
     }
 
-    public function getLibelle(): ?string
+    
+    public function getLibelle()
     {
         return $this->libelle;
     }
@@ -89,8 +97,5 @@ class Role
 
         return $this;
     }
-    public function __toString(): string
-    {
-        return $this->getLibelle();
-    }
+   
 }

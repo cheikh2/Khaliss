@@ -8,10 +8,10 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ORM\Entity(repositoryClass="App\Repository\DepotRepository")
  * @ApiResource(
- * normalizationContext={"groups"={"depot"}},
- *   denormalizationContext={"groups"={"depo"}},
- *  collectionOperations={
+ *   denormalizationContext={"disable_type_enforcement"=false},
+ * collectionOperations={
  *         "GET"={
  *               
 *               },
@@ -30,7 +30,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          },
  *     },
  * )
- * @ORM\Entity(repositoryClass="App\Repository\DepotRepository")
  */
 class Depot
 {
@@ -38,34 +37,30 @@ class Depot
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"depot"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"compt","com","depo","depot"})
+     * @Groups({"read", "write"})
      */
     private $montant;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"depot"})
      */
     private $dateDepot;
 
     /**
-     * @Groups({"depot","depo"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="depots", cascade={"persist"})
      */
     private $compte;
 
+
     /**
-     * @Groups({"depot","depo"})
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="depots", cascade={"persist"})
      */
     private $user;
-
 
     public function __construct()
     {
@@ -108,7 +103,6 @@ class Depot
         return $this;
     }
 
-    
     public function getUser(): ?User
     {
         return $this->user;
@@ -120,4 +114,5 @@ class Depot
 
         return $this;
     }
+
 }

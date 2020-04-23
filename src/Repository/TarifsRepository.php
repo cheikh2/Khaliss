@@ -19,7 +19,7 @@ class TarifsRepository extends ServiceEntityRepository
         parent::__construct($registry, Tarifs::class);
     }
 
-    public function findByTarifs($somme)
+    public function findTarifs($somme)
     {
       return $this->createQueryBuilder('t')
             ->Where('t.borneInferieur <= :val')

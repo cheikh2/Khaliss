@@ -5,6 +5,7 @@ namespace App;
 class Osms
 
 {
+    
     const BASE_URL = 'https://api.orange.com';
     
     /**
@@ -275,7 +276,7 @@ class Osms
                     . $jsonErrorCode . ')'
             );
         }
-
+/*
         if ($httpCode !== $successCode) {
             $errorMessage = '';
 
@@ -296,11 +297,10 @@ class Osms
             }
 
             return array('error' => $errorMessage);
-        }
+        }*/
 
         return $response;
     }
-
     /**
      *  Gets the Cliend ID.
      *

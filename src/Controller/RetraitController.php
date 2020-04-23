@@ -43,13 +43,13 @@ protected $tarifsRepo;
          $montantPercu = $data->getMontantPercu();
             
          $cni = $data->getCNIEnvoye();
-         
          $stat = $data->getStatut();
+         
         
          if($cni !== null AND $montantPercu>0 AND $stat==true){
             $CompteUserConnect->setSolde($solde + $montantPercu);
             $data->setStatut(false);
-
+/*
   // Your Account SID and Auth Token from twilio.com/console
       $sid = 'AC64f740168529113f75194eff6c8d0f08';
       $token = '9ab0ee745849699882fb55dba2591e39';
@@ -65,7 +65,7 @@ protected $tarifsRepo;
         // the body of the text message you'd like to send
         'body' => 'La somme que avez envoyé au' .$data->getTelEnvoye(), 'vient d\' être retirer!'
     )
-);
+);*/
             return $data;
          }else{
             throw new HttpException(403,'Retrait déjà éffectué');

@@ -10,11 +10,32 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(
- *   normalizationContext={"groups"={"part"}},
- *   denormalizationContext={"groups"={"par"}},
- * )
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
+ * @ApiResource(
+ *normalizationContext={"groups"={"read"}},
+ *denormalizationContext={"groups"={"write"}},
+   
+ *  collectionOperations={
+ * 
+ *          
+ *         "GET"={
+
+*               },
+*               "POST"={
+*                    
+
+*                }
+* 
+*     },
+*  itemOperations={
+*          "GET"={
+*               },
+*          "put"={
+ *              
+ *          },
+ *     },
+ *   
+ * )
  */
 class Partenaire
 {
@@ -26,19 +47,19 @@ class Partenaire
     private $id;
 
     /**
+     * @Groups({"read", "write"})
      * @ORM\Column(type="string", length=255)
-     * @Groups({"compt","com"})
      */
     private $ninea;
 
     /**
-     * @Groups({"compt","com"})
+     * @Groups({"read", "write"})
      * @ORM\Column(type="string", length=255)
      */
     private $rc;
 
     /**
-     * @Groups({"compt","com"})
+     * @Groups({"read", "write"})
      * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="partenaire", cascade={"persist"}) 
      */
     private $users;
@@ -48,8 +69,8 @@ class Partenaire
      */
     private $comptes;
 
-    /** 
-     * @ORM\OneToOne(targetEntity="App\Entity\Contrat", inversedBy="partenaire", cascade={"persist", "remove"})
+    /**@Groups({"read", "write"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Contrat", cascade={"persist", "remove"})
      */
     private $contrat;
 
@@ -159,10 +180,4 @@ class Partenaire
         return $this->contrat;
     }
 
-    public function setContrat(?Contrat $contrat): self
-    {
-        $this->contrat = $contrat;
-
-        return $this;
-    }
 }
